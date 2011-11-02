@@ -22,6 +22,10 @@ module ActsAsApi
 
       meta_hash = render_options[:meta] if render_options.has_key?(:meta)
 
+      parent_hash = render_options[:parent_hash] if render_options.has_key?(:parent_hash)
+
+      node = render_options[:node] if render_options.has_key?(:node)
+
       api_format =  api_format_options.keys.first
       api_model  =  api_format_options.values.first
 
@@ -73,6 +77,10 @@ module ActsAsApi
         output_params[:callback] = params[:callback]
         api_format = :acts_as_api_jsonp if ActsAsApi::Config.add_http_status_to_jsonp_response
       end
+
+      # add extra layer of JSON outside standard response
+      parent_hash[node] = api_response
+      api_response = parent_hash
 
       # create the Hash as response
       output_params[api_format] = api_response
